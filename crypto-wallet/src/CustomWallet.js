@@ -3,26 +3,29 @@ import './CustomWallet.css'
 import {ethers} from 'ethers'
 
 const CustomWallet = () => {
-
     
 	const [userAccount, setUserAccount] = useState(null);
 	const [userBalance, setUserBalance] = useState(null);
     const [userNetwork, setUserNetwork] = useState(null);
     const [errorMessage, setErrorMessage] = useState(null);
-	const [buttonText, setConnButtonText] = useState('Connect Wallet')
+	const [connectButton, setConnectButtonText] = useState("Connect Wallet")
 
     const connectWallet = () => {
         if(window.ethereum && window.ethereum.isMetaMask){
             window.ethereum.request({ method: 'eth_requestAccounts'})
 			.then(result => {
-				showUserDetails(result[0]);
+				populateUserDetails(result[0]);
+                setConnectButtonText("Wallet Connected");
+			})
+            .catch(error => {
+				setErrorMessage(error.message);
 			});
         } else {
-            setErrorMessage("Meta Mask is not installed!")
+            setErrorMessage("MetaMask is not installed!")
         }
     }
 
-    const showUserDetails = (newAccount) => {
+    const populateUserDetails = (newAccount) => {
 		setUserAccount(newAccount);
 		getAccountBalance(newAccount.toString());
         getUserNetwork();
@@ -70,10 +73,16 @@ const CustomWallet = () => {
 		});
 	};
 
+    const chainChangedHandler = () => {
+		window.location.reload();
+	}
+    
+    window.ethereum.on('chainChanged', chainChangedHandler);
+
     return (
 		<div className='customWallet'>
 		<h4> {"Please connect to Meta Mask"} </h4>
-			<button onClick={connectWallet}>{buttonText}</button>
+			<button onClick={connectWallet}>{connectButton}</button>
 			<div className='accountDisplay'>
 				<h3>Address: {userAccount}</h3>
 			</div>
