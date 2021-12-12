@@ -6,5 +6,10 @@
 
 hr.horizonalLine {
     border-top: 1px dotted black;
-  }
+}
+
+.error {
+    font-family: 'Times New Roman';
+    color: rgb(206, 50, 39);
+}
   

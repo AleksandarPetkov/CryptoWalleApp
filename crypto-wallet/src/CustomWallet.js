@@ -4,8 +4,6 @@ import {ethers} from 'ethers'
 import { utils } from 'ethers'
 import TokenList from './assets/token-list-mainnet.json'
 
-
-
 const CustomWallet = () => {
     
 	const [userAccount, setUserAccount] = useState(null);
@@ -17,8 +15,7 @@ const CustomWallet = () => {
     const [tokenSymbol, setTokenSymbol] = useState(null);
     const [tokenBalans, setTokenBalance] = useState(null);
     const [tokenTotalSupply, setTokenTotalSupply] = useState(null);
-    
-    // const [selectedToken, setSelectedToken] = useState(TokenList[0]);
+    const [selectedToken, setSelectedToken] = useState(TokenList[0]);
 
     const connectWallet = () => {
         if(window.ethereum && window.ethereum.isMetaMask){
@@ -83,65 +80,67 @@ const CustomWallet = () => {
 		});
 	};
 
+    async function getRC20TokenInfo() {
+
+        if(userAccount == null){
+           alert("Please make sure you are connected to your wallet");
+        } else {
+            let provider = ethers.getDefaultProvider();
+            let selectedAddress = selectedToken.address;
+            let abi = [
+                "function balanceOf(address owner) view returns (uint256)",
+                "function decimals() view returns (uint8)",
+                "function symbol() view returns (string)",
+                "function totalSupply() view returns (uint)"
+            ];
+    
+            let contract = new ethers.Contract(selectedAddress, abi, provider);
+     
+            let decimals = await contract.decimals();
+            let symbol = await contract.symbol();
+            let totalSupply = await contract.totalSupply();
+            let balance = utils.BigNumber = await contract.balanceOf(userAccount);
+    
+            setTokenSymbol(symbol);
+            setTokenDecimals(decimals);
+            setTokenBalance(utils.formatUnits(balance, 18));
+            setTokenTotalSupply(parseFloat(utils.formatUnits(totalSupply, 18)));
+        }
+    }
+
     const chainChangedHandler = () => {
 		window.location.reload();
 	}
     
     window.ethereum.on('chainChanged', chainChangedHandler);
 
-    /// Test Start
-    async function  TestERC20Token  ()  {
-        let provider = ethers.getDefaultProvider();
-        let address = "0xb62132e35a6c13ee1ee0f84dc5d40bad8d815206";
-        let testAddress = "0x2a98f128092abbadef25d17910ebe15b8495d0c1"
-        let abi = [
-            "function balanceOf(address owner) view returns (uint256)",
-            "function decimals() view returns (uint8)",
-            "function symbol() view returns (string)",
-            "function totalSupply() view returns (uint)"
-        ];
-        let contract = new ethers.Contract(testAddress, abi, provider);
- 
-        let decimals = await contract.decimals();
-        let symbol = await contract.symbol();
-        let totalSupply = await contract.totalSupply();
-        let balance = utils.BigNumber = await contract.balanceOf(userAccount);
-        parseFloat(utils.formatUnits(balance, 18));
-
-        setTokenSymbol(symbol);
-        setTokenDecimals(decimals);
-        setTokenBalance(utils.formatUnits(balance, 18));
-        setTokenTotalSupply(parseFloat(utils.formatUnits(totalSupply, 18)))
-
-        console.log(parseFloat(utils.formatUnits(totalSupply, 18)));
-        console.log(decimals);
-        console.log(symbol);
-        console.log(parseFloat(utils.formatUnits(balance, 18)));
-    }
-
-    /// Test End
-
     return (
 		<div className='customWallet'>
-		<h4> {"Please connect to Meta Mask"} </h4>
+		<h4> {"Please connect to MetaMask"} </h4>
 			<button onClick={connectWallet}>{connectButton}</button>
 			<div className='accountDisplay'>
 				<h3>Address: {userAccount}</h3>
 			</div>
 			<div className='balanceDisplay'>
-				<h3>Balance: {userBalance}</h3>
+				<h3>ETH Balance: {userBalance}</h3>
 			</div>
             <div className='networkDisplay'>
 				<h3>Network: {userNetwork}</h3>
 			</div>
-			{errorMessage}
-            <hr className="horizonalLine"></hr>
-            <button onClick={TestERC20Token}>{connectButton}</button>
 
-            {/* <select onChange={(e) => setSelectedToken(TokenListRinkeby[e.target.value])}>
-                {TokenListRinkeby.map((token, index) => 
-                (<option value={index} key={token.address}>{token.name}</option>))}
-            </select> */}
+            <p className="error">{errorMessage}.</p>
+			
+            <hr className="horizonalLine"></hr>
+            <h5>Please make sure you are connected to the wallet</h5>
+            <h5>Select the desired token and push the button to check it :)</h5>
+            <select onChange={(e) => setSelectedToken(TokenList[e.target.value])}>
+                {
+                TokenList.map((token, index) => 
+                (<option value={index} key={token.address}>{token.name}</option>))
+                }
+            </select>
+            
+            <button onClick={getRC20TokenInfo}>Check Token</button>
 
             <div className='networkDisplay'>
                 <h3>Token Details:</h3>
