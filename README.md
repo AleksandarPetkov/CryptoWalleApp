@@ -3,7 +3,7 @@ Simple React app which is integrate with MetaMask and gather ERC20 Token informa
 
 # Installation
 ``` bash
-npm instal --save ethers
+npm install --save ethers
 npm start
 ```
 
