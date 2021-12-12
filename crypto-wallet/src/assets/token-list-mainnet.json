@@ -1,0 +1,22 @@
+[
+    {
+      "name": "Nexo Token",
+      "address": "0xb62132e35a6c13ee1ee0f84dc5d40bad8d815206"
+    },
+    {
+        "name": "SHIBA INU",
+        "address": "0x95ad61b0a150d79219dcf64e1e6cc01f0b64c4ce"
+    },
+    {
+      "name": "CARDANO",
+      "address": "0xc14777c94229582e5758c5a79b83dde876b9be98"
+    },
+    {
+      "name": "Polcadot",
+      "address": "0x2d4fb6dd969992c881d8e534c747cc925d5ba221"
+    },
+    {
+      "name": "Dogecoin",
+      "address": "0x2a98f128092abbadef25d17910ebe15b8495d0c1"
+    }
+  ]
