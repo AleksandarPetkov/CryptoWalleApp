@@ -1,10 +1,10 @@
 import './App.css';
-import CustomWallet from './CustomWallet'; 
+import CustomWallet from './CustomWallet';
 
 function App() {
   return (
     <div className="App">
-      <CustomWallet/>
+      <CustomWallet />
     </div>
   );
 }
